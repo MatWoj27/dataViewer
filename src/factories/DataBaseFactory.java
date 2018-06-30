@@ -1,54 +1,87 @@
 package factories;
 
+import converters.ArrayConverter;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataBaseFactory {
 
-    private final String connectionURL = "jdbc:mysql://localhost:3306/sys?useSSL=false&Unicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private final String user = "root";
-    private final String password = "admin27";
+    private final String connectionURL = "jdbc:mysql://localhost:3306/sys";
+    private String connectionParameters = "?useSSL=false&Unicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
 
-    public DataBaseFactory() {
+    public boolean connect(String user, String password) {
         try {
-            connection = (Connection) DriverManager.getConnection(connectionURL, user, password);
+            connection = DriverManager.getConnection(connectionURL.concat(connectionParameters), user, password);
             if (connection != null) {
                 System.out.println("Connected succesfully");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public boolean checkIfUserExists(String login) {
-        String loginQuery = "SELECT 1 FROM Users WHERE login = '" + login + "';";
+    public String[] getTablesNames() {
+        String query = "SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA LIKE 'sys' AND TABLE_TYPE NOT LIKE 'VIEW';";
+        return getFirstColumnValues(query);
+    }
+
+    public String[] getViewsNames() {
+        String query = "SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA LIKE 'sys' AND TABLE_TYPE LIKE 'VIEW';";
+        return getFirstColumnValues(query);
+    }
+
+    public String[] getTableColumnsNames(String tableName) {
+        String query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'sys' AND TABLE_NAME = '" + tableName + "';";
+        return getFirstColumnValues(query);
+    }
+
+    public Object[][] getTableData(String tableNme, String[] attributesToGet) {
+        if (attributesToGet.length == 0) {
+            return null;
+        }
+        String attributesToGetSeparatedByComas = "";
+        for (String attribute : attributesToGet) {
+            attributesToGetSeparatedByComas = attributesToGetSeparatedByComas.concat(attribute).concat(", ");
+        }
+        attributesToGetSeparatedByComas = attributesToGetSeparatedByComas.substring(0, attributesToGetSeparatedByComas.length() - 2);
+        String query = "SELECT ".concat(attributesToGetSeparatedByComas).concat(" FROM ").concat(tableNme).concat(";");
+        List<Object[]> list = new ArrayList<Object[]>();
         try {
-            return checkIfExists(loginQuery);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                Object[] tmp = new Object[attributesToGet.length];
+                for (int i = 0; i < attributesToGet.length; i++) {
+                    tmp[i] = resultSet.getString(attributesToGet[i]);
+                }
+                list.add(tmp);
+            }
+            return ArrayConverter.listOfArraysToTwoDimArray(list);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String[] getFirstColumnValues(String query) {
+        List<String> list = new ArrayList<String>();
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                list.add(resultSet.getString(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
-    }
-
-    public boolean checkPassword(String login, String password) {
-        String doesPasswordMatchLoginQuery = "SELECT 1 FROM Users WHERE login LIKE '" + login + "' AND pass LIKE '" + password + "';";
-        try {
-            return checkIfExists(doesPasswordMatchLoginQuery);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean checkIfExists(String query) throws SQLException {
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(query);
-        if (resultSet.next()) {
-            return true;
-        }
-        return false;
+        return ArrayConverter.listToArray(list);
     }
 
 }

@@ -1,4 +1,4 @@
-import Windows.LogInWindow;
+import windows.LogInWindow;
 
 import javax.swing.*;
 
