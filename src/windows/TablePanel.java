@@ -4,6 +4,7 @@ import models.Table;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class TablePanel extends JPanel {
 
@@ -11,10 +12,12 @@ public class TablePanel extends JPanel {
     JScrollPane scrollPane;
 
     public TablePanel() {
+        setLayout(new BorderLayout());
         table = new JTable();
+        table.setFillsViewportHeight(true);
         scrollPane = new JScrollPane(table);
         scrollPane.setViewportView(table);
-        add(scrollPane);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     public void setTable(Table table) {

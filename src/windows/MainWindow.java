@@ -52,7 +52,25 @@ public class MainWindow extends JFrame implements ActionListener {
 
     private void createTabbedPane() {
         tables = new JTabbedPane();
+        showTablesInTabbedPane();
+    }
+
+    private void createActionPanel() {
+        actionPanel = new JPanel();
+    }
+
+    private void showViewsInTabbedPane(){
+        tablesNames = dataBaseFactory.getViewsNames();
+        refreshTablesInTabbedPane();
+    }
+
+    private void showTablesInTabbedPane(){
         tablesNames = dataBaseFactory.getTablesNames();
+        refreshTablesInTabbedPane();
+    }
+
+    private void refreshTablesInTabbedPane(){
+        tables.removeAll();
         for (int i = 0; i < tablesNames.length; i++) {
             String[] columnsNames = dataBaseFactory.getTableColumnsNames(tablesNames[i]);
             Table table = new Table();
@@ -64,10 +82,6 @@ public class MainWindow extends JFrame implements ActionListener {
         }
     }
 
-    private void createActionPanel() {
-        actionPanel = new JPanel();
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -77,7 +91,7 @@ public class MainWindow extends JFrame implements ActionListener {
             } else {
                 showTables.setSelected(true);
             }
-            // set tabbed pane to show tables
+            showTablesInTabbedPane();
         }
         else if (source == showViews){
             if (showTables.isSelected()) {
@@ -85,7 +99,7 @@ public class MainWindow extends JFrame implements ActionListener {
             } else {
                 showViews.setSelected(true);
             }
-            // set tabbed pane to show views
+            showViewsInTabbedPane();
         }
     }
 }
