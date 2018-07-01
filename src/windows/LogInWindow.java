@@ -11,13 +11,14 @@ public class LogInWindow extends JFrame implements ActionListener {
 
     private final int windowWidth = 350;
     private final int windowHeight = 250;
+
     JButton logInButton;
     JPasswordField passwordField;
     JTextField loginTextField;
     JRadioButton echoRadioButton;
     JLabel feedback, loginLabel, passwordLabel;
+    JPanel centerPanel, eastPanel;
 
-    JPanel mainPanel, centerVerticalPanel, rightVerticalPanel;
     Dimension verticalMargin;
     Dimension horizontalMargin;
     Dimension spacinigBetweenComponents;
@@ -27,69 +28,73 @@ public class LogInWindow extends JFrame implements ActionListener {
         setSize(windowWidth, windowHeight);
         setResizable(false);
         setTitle("Sign in");
+
         verticalMargin = new Dimension(0, 20);
         horizontalMargin = new Dimension(90, 0);
         spacinigBetweenComponents = new Dimension(15, 15);
         textFieldSize = new Dimension(150, 20);
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        mainPanel.add(Box.createRigidArea(horizontalMargin));
 
-        centerVerticalPanel = new JPanel();
-        centerVerticalPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.setLayout(new BoxLayout(centerVerticalPanel, BoxLayout.Y_AXIS));
-        centerVerticalPanel.add(Box.createRigidArea(verticalMargin));
+        setLayout(new BorderLayout());
+
+        add(Box.createRigidArea(horizontalMargin), BorderLayout.WEST);
+
+        centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        centerPanel.add(Box.createRigidArea(verticalMargin));
+
         loginLabel = new JLabel("Login:");
         loginLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.add(loginLabel);
+        centerPanel.add(loginLabel);
 
         loginTextField = new JTextField();
         loginTextField.setMaximumSize(textFieldSize);
         loginTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.add(loginTextField);
+        centerPanel.add(loginTextField);
 
-        centerVerticalPanel.add(Box.createRigidArea(spacinigBetweenComponents));
+        centerPanel.add(Box.createRigidArea(spacinigBetweenComponents));
 
         passwordLabel = new JLabel("Password:");
         passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.add(passwordLabel);
+        centerPanel.add(passwordLabel);
 
         passwordField = new JPasswordField();
         passwordField.setMaximumSize(textFieldSize);
         passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
         passwordField.setEchoChar('*');
-        centerVerticalPanel.add(passwordField);
+        centerPanel.add(passwordField);
 
-        centerVerticalPanel.add(Box.createRigidArea(spacinigBetweenComponents));
+        centerPanel.add(Box.createRigidArea(spacinigBetweenComponents));
 
         logInButton = new JButton("Sign In");
         logInButton.addActionListener(this);
         logInButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.add(logInButton);
+        centerPanel.add(logInButton);
 
-        centerVerticalPanel.add(Box.createRigidArea(spacinigBetweenComponents));
+        centerPanel.add(Box.createRigidArea(spacinigBetweenComponents));
 
         feedback = new JLabel();
         feedback.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerVerticalPanel.add(feedback);
+        centerPanel.add(feedback);
 
-        centerVerticalPanel.add(Box.createRigidArea(verticalMargin));
+        centerPanel.add(Box.createRigidArea(verticalMargin));
 
-        mainPanel.add(centerVerticalPanel);
+        add(centerPanel, BorderLayout.CENTER);
 
-        rightVerticalPanel = new JPanel();
-        rightVerticalPanel.setLayout(new BoxLayout(rightVerticalPanel, BoxLayout.Y_AXIS));
+        eastPanel = new JPanel();
+        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+        eastPanel.setPreferredSize(horizontalMargin);
+        eastPanel.add(Box.createRigidArea(new Dimension(0, verticalMargin.height + spacinigBetweenComponents.height + textFieldSize.height + loginLabel.getMaximumSize().height + passwordLabel.getMaximumSize().height - 2)));
 
         echoRadioButton = new JRadioButton();
         echoRadioButton.setText("Show");
-        echoRadioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        echoRadioButton.setMaximumSize(new Dimension(60, 20));
+        echoRadioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         echoRadioButton.addActionListener(this);
-        rightVerticalPanel.add(echoRadioButton);
-        mainPanel.add(rightVerticalPanel);
-        this.add(mainPanel);
+        eastPanel.add(echoRadioButton);
+        add(eastPanel, BorderLayout.EAST);
 
-        this.getRootPane().setDefaultButton(logInButton);
+        getRootPane().setDefaultButton(logInButton);
+
     }
 
     @Override
