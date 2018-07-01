@@ -1,6 +1,6 @@
 package windows;
 
-import factories.DataBaseFactory;
+import factories.DatabaseFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,11 +111,11 @@ public class LogInWindow extends JFrame implements ActionListener {
             }
             passwordField.setText(tmp);
         } else {
-            DataBaseFactory dataBaseFactory = new DataBaseFactory();
+            DatabaseFactory databaseFactory = new DatabaseFactory();
             String login = loginTextField.getText();
             String password = new String(passwordField.getPassword());
-            if (dataBaseFactory.connect(login, password)) {
-                MainWindow mainWindow = new MainWindow(dataBaseFactory);
+            if (databaseFactory.connect(login, password)) {
+                MainWindow mainWindow = new MainWindow(databaseFactory);
                 mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 mainWindow.setVisible(true);
                 mainWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);

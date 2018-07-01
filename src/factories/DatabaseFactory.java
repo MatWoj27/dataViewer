@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataBaseFactory {
+public class DatabaseFactory {
 
     private final String connectionURL = "jdbc:mysql://localhost:3306/sys";
     private String connectionParameters = "?useSSL=false&Unicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";

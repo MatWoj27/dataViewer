@@ -1,6 +1,6 @@
 package windows;
 
-import factories.DataBaseFactory;
+import factories.DatabaseFactory;
 import models.Table;
 
 import javax.swing.*;
@@ -10,16 +10,20 @@ import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame implements ActionListener {
 
+    private final int minimumWindowWidth = 800;
+    private final int minimumWindowHeight = 600;
+
     JTabbedPane tables;
     JPanel verticalPanel, optionPanel, actionPanel, mainPanel;
     JRadioButton showTables, showViews;
-    DataBaseFactory dataBaseFactory;
+    DatabaseFactory databaseFactory;
     String[] tablesNames;
 
-    public MainWindow(DataBaseFactory dataBaseFactory) {
+    public MainWindow(DatabaseFactory databaseFactory) {
         setResizable(true);
+        setMinimumSize(new Dimension(minimumWindowWidth, minimumWindowHeight));
         setTitle("DataViewer");
-        this.dataBaseFactory = dataBaseFactory;
+        this.databaseFactory = databaseFactory;
         createMainPanel();
     }
 
@@ -52,6 +56,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
     private void createTabbedPane() {
         tables = new JTabbedPane();
+        tables.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         showTablesInTabbedPane();
     }
 
@@ -60,22 +65,22 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
     private void showViewsInTabbedPane(){
-        tablesNames = dataBaseFactory.getViewsNames();
+        tablesNames = databaseFactory.getViewsNames();
         refreshTablesInTabbedPane();
     }
 
     private void showTablesInTabbedPane(){
-        tablesNames = dataBaseFactory.getTablesNames();
+        tablesNames = databaseFactory.getTablesNames();
         refreshTablesInTabbedPane();
     }
 
     private void refreshTablesInTabbedPane(){
         tables.removeAll();
         for (int i = 0; i < tablesNames.length; i++) {
-            String[] columnsNames = dataBaseFactory.getTableColumnsNames(tablesNames[i]);
+            String[] columnsNames = databaseFactory.getTableColumnsNames(tablesNames[i]);
             Table table = new Table();
             table.setColumnsNames(columnsNames);
-            table.setData(dataBaseFactory.getTableData(tablesNames[i], columnsNames));
+            table.setData(databaseFactory.getTableData(tablesNames[i], columnsNames));
             TablePanel tablePanel = new TablePanel();
             tablePanel.setTable(table);
             tables.add(tablePanel, tablesNames[i]);
